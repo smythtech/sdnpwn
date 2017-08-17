@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 #What is sdnpwn? 
 sdnpwn is a toolkit and framework for testing the security of Software-Defined Networks (SDNs).
 
@@ -30,10 +30,4 @@ The above command would retrieve more information about the mods module, such as
 
 #Further Information
 Check out https://sdnpwn.net for articles and tutorials on using various sdnpwn modules and the attacks they use.
-=======
-# sdnpwn
-An SDN penetration testing toolkit
 
-
-Coming soon
->>>>>>> 59fbed4a3e20feef431e4ef9ee8074683884e775
