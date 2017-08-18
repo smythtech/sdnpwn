@@ -3,7 +3,18 @@
 sdnpwn is a toolkit and framework for testing the security of Software-Defined Networks (SDNs).
 
 # Installation
+
+First download sdnpwn using git
+
+```
+$git clone https://github.com/smythtech/sdnpwn
+```
+
 The setup.sh script takes care installing software required for sdnpwn to function. Just run ./setup.sh and follow the instructions.
+
+```
+$sudo ./setup.sh
+```
 
 # Usage
 Functionality in sdnpwn is divided into different modules. Each attack or attack type is available from a certain module.

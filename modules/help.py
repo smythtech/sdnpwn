@@ -43,7 +43,7 @@ def run(params):
   print("sdnpwn is a toolkit and framework for testing the security of Software-Defined Networks (SDNs).")
   print("")
   
-  sdnpwn.message("How do I use it?", sdnpwn.SUCCESS)
+  sdnpwn.message("Usage", sdnpwn.SUCCESS)
   print('''Functionality in sdnpwn is divided into different modules. Each attack or attack type is available from a certain module.
   
 Modules can be executed like so:
@@ -61,18 +61,18 @@ More information about a certain module can be accessed using the info module:
 The above command would retrieve more information about the mods module, such as a description and available options.''')
   print("")
   
-  sdnpwn.message("This is a framework?", sdnpwn.SUCCESS)
+  sdnpwn.message("Creating and managing modules", sdnpwn.SUCCESS)
   print('''Many sdnpwn modules use functionality from other modules. Each sdnpwn module is a Python module in itself so modules can be imported and functionality accessed. New modules can be created using the following command:
   
 ./sdnpwn.py mods -n <new module name>
   
-This new module will be created with the correct structure for an sdnpwn module.
+Running the above command will create a new sdnpwn module from a template.
 Modules can be removed with the following command:
   
 ./sdnpwn.py mods -r <module name>''')
   print("")
   
-  sdnpwn.message("Where can I learn more?", sdnpwn.SUCCESS)
+  sdnpwn.message("Further Information", sdnpwn.SUCCESS)
   print("Check out https://sdnpwn.net for articles and tutorials on using various sdnpwn modules and the attacks they use.")
   print("")
     
