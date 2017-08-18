@@ -7,13 +7,13 @@ sdnpwn is a toolkit and framework for testing the security of Software-Defined N
 First download sdnpwn using git
 
 ```
-$git clone https://github.com/smythtech/sdnpwn
+git clone https://github.com/smythtech/sdnpwn
 ```
 
 The setup.sh script takes care installing software required for sdnpwn to function. Just run ./setup.sh and follow the instructions.
 
 ```
-$sudo ./setup.sh
+sudo ./setup.sh
 ```
 
 # Usage
