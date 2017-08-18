@@ -6,15 +6,9 @@ from scapy.all import *
 import sys
 import netifaces
 import errno
-
 import modules.sdnpwn_common as com
-
 import imp
 
-
-SDNPWN_VERSION = "0"
-
-verbose = 0
 conf.verb = 0
 
 def main():
