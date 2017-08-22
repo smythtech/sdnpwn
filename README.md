@@ -10,6 +10,13 @@ First download sdnpwn using git
 git clone https://github.com/smythtech/sdnpwn
 ```
 
+Make the sdnpwn.py and setup.sh scripts executable
+
+```
+sudo chmod +x sdnpwn.py
+sudo chmod +x setup.sh
+```
+
 The setup.sh script takes care installing software required for sdnpwn to function. Just run ./setup.sh and follow the instructions.
 
 ```
