@@ -25,27 +25,6 @@ from time import sleep
 import modules.sdnpwn_common as sdnpwn
 from modules.sdnpwn_of_helper import * 
 
-class ScanResult:
-  deviceLabel = None
-  deviceType = None
-  deviceOFVersion = None
-  scanType = None
-  deviceData = []
-  
-  def __init__(self):
-    self.deviceLabel = None
-    self.deviceType = None
-    self.deviceOFVersion = None
-    self.scanType = None
-    self.deviceData = []
-  
-  
-  def addDeviceData(self, d):
-    self.deviceData.append(d)
-    
-  def getDeviceData(self):
-    return self.deviceData
-
 def info():
   return "Generate OpenFlow messages. Currently supports OpenFlow V1.0 only."
   
@@ -58,9 +37,10 @@ def usage():
   sdnpwn.addUsage("-c | --count", "Number of messages to send")
   sdnpwn.addUsage("-d | --delay", "Delay between messages")
   
+  sdnpwn.addUsgae("--hold-open", "Keep socket open after sending message")
+  
   sdnpwn.addUsage("--hello", "Send OF Hello message")
   sdnpwn.addUsage("--echo-request", "Send an OF Echo Request")
-  sdnpwn.addUsage("--feature-request", "Send an OF Feature Request")
   
   sdnpwn.addUsage("--packet-in", "Send an OF packet-in")
   sdnpwn.addUsage(" --xid", "XID for OF header")
@@ -130,40 +110,17 @@ def run(params):
                     #}[msg]
             #action(sock)
             
-          #Remove following items in favour of above
+          #TODO: Remove following items in favour of above
           if("--hello" in params):
             sdnpwn.message("Sending OF Hello to " + str(targetHost), sdnpwn.NORMAL)
             ofHello = Hello()
             sock.send(ofHello.pack())
-            #header, body = getResponse(sock)
-            #if(header is not None):
-              #print("    |_ Response: " + str(header.message_type))
               
           if("--echo-request" in params):
             sdnpwn.message("Sending OF Echo Request to " + str(targetHost), sdnpwn.NORMAL)
             echoReq = EchoRequest()
             sock.send(echoReq.pack())
-            #header, body = getResponse(sock)
-            #if(header is not None):
-              #print("    |_ Response: " + str(header.message_type))
               
-          if("--feature-request" in params):
-            sdnpwn.message("Sending OF Feature Request to " + str(targetHost), sdnpwn.NORMAL)
-            featureReqScanRes = featureRequestScan(targetLabel, sock)
-            if(targetLabel in scanResults):
-              scanResults[targetLabel].append(featureReqScanRes)
-            else:
-              scanResults[targetLabel] = []
-              scanResults[targetLabel].append(featureReqScanRes)
-              
-          if("--feature-reply" in params):
-            sdnpwn.message("Sending OF Feature Reply to " + str(targetHost), sdnpwn.NORMAL)
-            featureReplyScanRes = featureReplyScan(targetLabel, sock)
-            if(targetLabel in scanResults):
-              scanResults[targetLabel].append(featureReplyScanRes)
-            else:
-              scanResults[targetLabel] = []
-              scanResults[targetLabel].append(featureReplyScanRes)
               
           if("--packet-in" in params):
             xid = 13
