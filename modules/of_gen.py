@@ -37,7 +37,7 @@ def usage():
   sdnpwn.addUsage("-c | --count", "Number of messages to send")
   sdnpwn.addUsage("-d | --delay", "Delay between messages")
   
-  sdnpwn.addUsgae("--hold-open", "Keep socket open after sending message")
+  sdnpwn.addUsage("--hold-open", "Keep socket open after sending message")
   
   sdnpwn.addUsage("--hello", "Send OF Hello message")
   sdnpwn.addUsage("--echo-request", "Send an OF Echo Request")
