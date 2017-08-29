@@ -33,6 +33,7 @@ def usage():
   sdnpwn.addUsage("-c | --controller", "IP address of controller (Default 127.0.0.1)", False)
   sdnpwn.addUsage("-p | --port", "Openflow port on controller (Default 6633)", False)
   sdnpwn.addUsage("-r | --config", "Switch configuration file to use", True)
+  sdnpwn.addUsage("-l | --listen", "Port for switch relay proxy", False)
   sdnpwn.addUsage("-o | --output-to", "Interface to forward packet out message payloads", False)
   sdnpwn.addUsage("-f | --output-filter", "Filter packets by output port. Use with -o", False)
   sdnpwn.addUsage("-v | --verbose", "Enable verbose output", False)
