@@ -74,7 +74,7 @@ def info():
 def usage():
 
   sdnpwn.addUsage("--iface1", "Set network interface 1", True)
-  sdnpwn.addUsage("--iface1", "Set network interface 2", True)
+  sdnpwn.addUsage("--iface2", "Set network interface 2", True)
   sdnpwn.addUsage("--script", "Pass traffic through a custom script. Provide script location.")
   sdnpwn.addUsage("--dos", "Only forward LLDP traffic and create a 'black hole' for other traffic")
   sdnpwn.addUsage("--verbose", "Get more output")
