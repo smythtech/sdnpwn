@@ -10,7 +10,7 @@ def signal_handler(signal, frame):
   #Handle Ctrl+C here
   print("")
   sdnpwn.message("Stopping...", sdnpwn.NORMAL)
-  return
+  exit(0)
 
 def info():
   return "Attempts to fingerprint the network controller."
@@ -94,7 +94,7 @@ def run(params):
     if(matches == 0):
       sdnpwn.message("Could not determine controller from LLDP times.", sdnpwn.NORMAL)
   
-  elif("--target" in params):
+  elif(sdnpwn.checkArg(["--target", "-t"], params)):
     #Test using a URL
     target = sdnpwn.getArg(["--target", "-t"], params)
     sdnpwn.message("Testing visibility of northbound interface on host " + str(target), sdnpwn.NORMAL)
@@ -117,7 +117,7 @@ def run(params):
         for c in defaultGuiPorts:
           if(defaultGuiPorts[c] == p):
             sdnpwn.message("Port used by " + str(c) + " for GUI interface", sdnpwn.VERBOSE)
-        sdnpwn.message("Testing GUI URLs...", sdnpwn.NORMAL)
+        sdnpwn.message("Testing GUI URLs for port " + str(p), sdnpwn.NORMAL)
         for u in defaultGuiURLs:
           try:
             conn = httpc.HTTPConnection(target, int(p))
@@ -133,6 +133,7 @@ def run(params):
           except Exception as e:
             if(verbose == True):
               sdnpwn.message("Error testing URL: " + str(e), sdnpwn.VERBOSE)
+        print("")
       except Exception as e:
         if(verbose == True):
           sdnpwn.message("No connection to " + str(target) + " on port " + str(p), sdnpwn.VERBOSE)
