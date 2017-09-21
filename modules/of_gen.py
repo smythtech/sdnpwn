@@ -45,7 +45,7 @@ def usage():
   sdnpwn.addUsage("--packet-in", "Send an OF packet-in")
   sdnpwn.addUsage(" --xid", "XID for OF header")
   sdnpwn.addUsage(" --buffer-id", "Buffer ID for packet-in")
-  sdnpwn.addUsage(" --packet-in", "Length of data in packet-in (Calculated by default)")
+  sdnpwn.addUsage(" --total-length", "Length of data in packet-in (Calculated by default)")
   sdnpwn.addUsage(" --in-port", "Port packet was received on")
   sdnpwn.addUsage(" --reason", "Reason for packet-in. Can be 'match' or 'action'")
   sdnpwn.addUsage(" --data-raw", "Packet-in data as hex")
@@ -71,7 +71,7 @@ def run(params):
   sockTimeout = sdnpwn.getArg(["--socket-timeout", "-s"], params, 2)
   count = int(sdnpwn.getArg(["--count", "-c"], params, 1))
   delay = float(sdnpwn.getArg(["--delay", "-d"], params, 1))
-  
+  verbose = sdnpwn.checkArg(["--verbose", "-v"], params)
     
   if(target == None):
     print(info())
@@ -149,11 +149,15 @@ def run(params):
                 data = params[params.index("--data-raw")+1] #Data in bytes
                 dataBin = codecs.decode(data, 'hex_codec')
               elif("--data-scapy" in params):
-                cmd = params[params.index("--data-scapy")+1] #Data as scapy code
-                pkt = eval(cmd) #Get packet from scapy objects
-                dataBin = codecs.decode(scapy_packet_to_string(pkt), 'hex_codec')
-                dataBin = bytes(pkt)
-                
+                try:
+                  cmd = params[params.index("--data-scapy")+1] #Data as scapy code
+                  pkt = eval(cmd) #Get packet from scapy objects
+                  dataBin = codecs.decode(scapy_packet_to_string(pkt), 'hex_codec')
+                  dataBin = bytes(pkt)
+                except Exception as e:
+                  sdnpwn.message("Error building Scapy packet", sdnpwn.ERROR)
+                  print(e)
+
             except Exception as e:
               sdnpwn.message("Missing paramerters for OF Packet In!", sdnpwn.ERROR)
               print(e)
@@ -170,8 +174,7 @@ def run(params):
             sdnpwn.message("Holding socket open", sdnpwn.NORMAL)
           
         else:
-          if(verbose == True):
-            sdnpwn.message("Could not connect to " + targetHost + " on socket " + str(p), sdnpwn.WARNING)   
+          sdnpwn.message("Could not connect to " + targetHost + " on socket " + str(p), sdnpwn.WARNING)   
         
     if("--hold-open" in params):    
       sdnpwn.message("Keeping sockets open. Use CTRL+C to stop...", sdnpwn.NORMAL)
