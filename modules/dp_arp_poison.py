@@ -17,7 +17,7 @@ def usage():
   sdnpwn.addUsage("-i | --iface", "Interface to use", True)
   sdnpwn.addUsage("-v | --victim", "IP address of victim", True)
   sdnpwn.addUsage("-vM| --victim-mac", "MAC address of victim")
-  sdnpwn.addUsage("-t | --target-ip", "IP address to poisin in vicims ARP cache", True)
+  sdnpwn.addUsage("-t | --target-ip", "IP address to poison in victims ARP cache", True)
   sdnpwn.addUsage("-m | --mac", "MAC address to insert in the victims cache", True)
   sdnpwn.addUsage("-l | --loop", "Continue poisoning until stopped")
   sdnpwn.addUsage("-d | --delay", "Delay between packets when looping")
