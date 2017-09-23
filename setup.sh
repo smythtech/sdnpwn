@@ -9,7 +9,7 @@ From package manager:
    - python3-scipy
    - bridge-utils
    - python3-pip
-
+   - maven
 From pip3:
    - scapy-python
    - python-openflow
@@ -22,7 +22,7 @@ read -p "Install Required Software? [y/N] " res
 
 if [ "$res" == "y" ]; then
   apt-get update
-  apt-get install python3 python3-pip python3-netifaces python3-scipy bridge-utils python3-tabulate
+  apt-get install python3 python3-pip python3-netifaces python3-scipy bridge-utils python3-tabulate maven
   pip3 install scapy-python3
   pip3 install python-openflow
 else
