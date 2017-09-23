@@ -22,6 +22,9 @@ def printNormal(msg):
   
 def printWarning(msg):
   message(msg, WARNING)
+
+def printError(msg):
+  message(msg, ERROR)
   
 def printSuccess(msg):
   message(msg, SUCCESS)
