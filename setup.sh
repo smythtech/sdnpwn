@@ -13,6 +13,7 @@ From package manager:
 From pip3:
    - scapy-python
    - python-openflow
+   - websocket-client
 
 This script will now download the above software using apt-get and pip3. If you're ok with this enter 'y' to continue.
 
@@ -25,6 +26,7 @@ if [ "$res" == "y" ]; then
   apt-get install python3 python3-pip python3-netifaces python3-scipy bridge-utils python3-tabulate maven
   pip3 install scapy-python3
   pip3 install python-openflow
+  pip3 install websocket-client
 else
   echo "Quiting."
 fi
