@@ -52,3 +52,5 @@ The above command would retrieve more information about the mods module, such as
 # Further Information
 Check out https://sdnpwn.net for articles and tutorials on using various sdnpwn modules and the attacks they use.
 
+# Disclaimer
+This tool comes without warranty. The developers of this tool decline all responsability for malicious or illegal use, and impact caused by malicious or illegal use. 
