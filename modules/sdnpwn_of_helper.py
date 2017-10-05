@@ -169,7 +169,7 @@ class OpenFlowSwitch():
       return
       
     sdnpwn.message("Socket connected. Sending OF Hello...", sdnpwn.SUCCESS)
-    ofHello = Hello()
+    ofHello = Hello(xid=0)
     header = Header()
     self.comm_sock.send(ofHello.pack()) #Send Hello
     replyHeader = self.comm_sock.recv(8)
