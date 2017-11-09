@@ -2,8 +2,13 @@
 import signal
 import websocket
 import json
-
+from threading import Thread
 import modules.sdnpwn_common as sdnpwn
+
+updatePrefsReq = '{"event":"updatePrefReq","payload":{"key":"topo_prefs","value":{"insts":1,"summary":1,"detail":1,"hosts":0,"offdev":1,"dlbls":0,"porthl":1,"bg":0,"spr":0,"ovid":"traffic","toolbar":0}}}'
+requestSummary = '{"event":"requestSummary","payload":{}}'
+topoSelectOverlay = '{"event":"topoSelectOverlay","payload":{"activate":"traffic"}}'
+topoStart = '{"event":"topoStart","payload":{}}'
 
 def signal_handler(signal, frame):
   #Handle Ctrl+C here
@@ -18,21 +23,40 @@ def usage():
   sdnpwn.addUsage(["-t", "--target"], "IP address of controller", True)
   sdnpwn.addUsage(["-p", "--port"], "Websocket port (Default 8181)", False)
   sdnpwn.addUsage(["-c", "--cookie"], "Add cookie (like 'JSESSIONID=1sz99uvm1z2971t18f55lmpc0d')", False)
+  sdnpwn.addUsage(["-s", "--summary"], "Request Summary events", False)
+  sdnpwn.addUsage(["-d", "--topo"], "Request Topology events", False)
+  #sdnpwn.addUsage(["-k", "--keep-alive"], "Keep websocket open and receive new events", False)
   
   return sdnpwn.getUsage()
 
 def onOpen(ws):
   sdnpwn.printSuccess("Connected to websocket!")
+  #Thread(target=requestEvents, args=(ws,)).start()
+  requestEvents(ws)
 
 def onMessage(ws, msgJSON):
   msg = json.loads(msgJSON)
   print(json.dumps(msg, indent=4, sort_keys=True))
+  ws.sdnpwn_expected_events -= 1
   
 def onError(ws, err):
   sdnpwn.printError("Got error: " + str(err))
   
 def onClose(ws):
   sdnpwn.printWarning("Connection to websocket closed!")
+
+def requestEvents(ws):
+  if(sdnpwn.checkArg(["-s", "--summary"], ws.sdnpwn_params) == True):
+    ws.send(requestSummary)
+    ws.sdnpwn_expected_events += 1
+  if(sdnpwn.checkArg(["-d", "--topo"], ws.sdnpwn_params) == True):
+    ws.send(topoStart)
+    ws.sdnpwn_expected_events += 1 #Number of events will depend on number of devices. Need to revise exit strategy after data dump
+  #if(sdnpwn.checkArg(["-k", "--keep-alive"], ws.sdnpwn_params) == False):
+    #while(ws.sdnpwn_expected_events != 0):
+      #pass
+    #sdnpwn.printNormal("Closing Websocket")
+    #ws.close()
 
 def run(params):
   signal.signal(signal.SIGINT, signal_handler) #Assign the signal handler
@@ -49,12 +73,16 @@ def run(params):
     ws.on_message = onMessage
     ws.on_error = onError
     ws.on_close = onClose
+    ws.sdnpwn_params = params
+    ws.sdnpwn_expected_events = 1 #Execting initial bootstrap event
     
     if(cookie is not None):
       ws.cookie = cookie
     
     sdnpwn.printNormal("Attempting connection to " + wsURL)
+    
     ws.run_forever()
+
   else:
     print(usage())
     
