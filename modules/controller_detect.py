@@ -19,6 +19,8 @@ def usage():
   
   sdnpwn.addUsage("-i | --iface", "Interface to use")
   sdnpwn.addUsage("-l | --lldp", "Determine controller based off LLDP traffic")
+  sdnpwn.addUsage("-d | --dump-lldp", "Dump the contents of the LLDP message")
+  sdnpwn.addUsage("-n | --ignore-content", "Do not detect controller based on LLDP content")
   sdnpwn.addUsage("-t | --target", "Determine controller based northbound interface")
   sdnpwn.addUsage("-p | --ports", "Set ports to scan when --target is specified.")
   sdnpwn.addUsage("-x | --proxy", "Define a proxy server to use when --target is specified.")
@@ -26,15 +28,25 @@ def usage():
    
   return sdnpwn.getUsage()
 
-def lldpListen(interface, dumpLLDP):
-   sniff(iface=interface, prn=lldpListenerCallback(interface, dumpLLDP), store=0, stop_filter=lldpStopFilter)
+def lldpListen(interface, dumpLLDP, ignoreLLDPContent):
+   sniff(iface=interface, prn=lldpListenerCallback(interface, dumpLLDP, ignoreLLDPContent), store=0, stop_filter=lldpStopFilter)
    
-def lldpListenerCallback(interface, dumpLLDP):
+def lldpListenerCallback(interface, dumpLLDP, ignoreLLDPContent):
   def packetHandler(pkt):
     global lldpTimeTrack
+    lldpContents = {"ONOS": "ONOS Discovery"}
     #LLDP: 0x88cc, BDDP: 0x8942
     if(pkt.type == 0x88cc):
-      lldpTimeTrack.append(int(round(time.time())))
+      lldpTime = int(round(time.time()))
+      if(len(lldpTimeTrack) > 0):
+        if(lldpTime == lldpTimeTrack[-1]):
+          return #This is a simple way to try to detect duplicate LLDP messages being picked up by the sniffer.
+      lldpTimeTrack.append(lldpTime)
+      if(ignoreLLDPContent == False):
+        for c in lldpContents:
+          if(lldpContents[c] in str(pkt)):
+            sdnpwn.printSuccess("LLDP contents matches " + c)
+            exit(0)
       if(dumpLLDP == True):
         print(pkt)
   return packetHandler
@@ -56,6 +68,7 @@ def run(params):
   guiIdentifiers = {}
   ofdpIntervals = {"Floodlight": 15, "OpenDayLight (Lithium & Helium)": 5, "OpenDayLight (Hydrogen)": 300, "Pox?": 5, "Ryu?": 1, "Beacon": 15, "ONOS": 3}
   
+  
   iface = None
   verbose = False
   dumpLLDP = False
@@ -63,6 +76,7 @@ def run(params):
   signal.signal(signal.SIGINT, signal_handler) #Assign the signal handler
   
   dumpLLDP = sdnpwn.checkArg(["--dump-lldp", "-d"], params)
+  ignoreLLDPContent = sdnpwn.checkArg(["--ignore-content", "-n"], params)
   verbose = sdnpwn.checkArg(["--verbose", "-v"], params)
   
   if(sdnpwn.checkArg(["--lldp", "-l"], params)):
@@ -72,7 +86,7 @@ def run(params):
       sdnpwn.message("Please specify an interface with --iface option", sdnpwn.ERROR)
       return
     sdnpwn.message("Collecting 6 LLDP frames. This may take a few minutes...", sdnpwn.NORMAL)
-    lldpListen(iface, dumpLLDP)
+    lldpListen(iface, dumpLLDP, ignoreLLDPContent)
     sdnpwn.message("Got all LLDP frames. Getting mean time between frames...", sdnpwn.NORMAL)
     timeBetweenMessages = []
     timeBetweenMessages.append((lldpTimeTrack[1] - lldpTimeTrack[0]))
@@ -82,7 +96,9 @@ def run(params):
     meanTimeBetweenMessages = 0
     for i in timeBetweenMessages:
       meanTimeBetweenMessages += i
-    meanTimeBetweenMessages = (meanTimeBetweenMessages/len(timeBetweenMessages))
+    meanTimeBetweenMessages = round((meanTimeBetweenMessages/len(timeBetweenMessages)))
+    
+   
     
     sdnpwn.message("Mean time between frames is: " + str(meanTimeBetweenMessages), sdnpwn.NORMAL)
     
