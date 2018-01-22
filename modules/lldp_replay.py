@@ -49,16 +49,15 @@ def run(params):
   iface = sdnpwn.getArg(["--iface", "-i"], params)
   count = sdnpwn.getArg(["--count", "-c"], params, 1)
   
-  print(count)
   if(sdnpwn.checkArg(["--capture", "-w"], params)):
-    outFile = params[params.index("--capture")+1]
+    outFile = sdnpwn.getArg(["--capture", "-w"], params)
     frameHandler = FrameHandler(iface, outFile)
     sdnpwn.message("Starting listener on interface " + iface, sdnpwn.NORMAL)
-    sniff(iface=iface, store=0, prn=frameHandler.handler, count=1)
+    sniff(iface=iface, store=0, prn=frameHandler.handler, count=1, filter="ether proto 0x88cc")
     sdnpwn.message("LLDP frame saved to " + outFile, sdnpwn.SUCCESS)
   elif(sdnpwn.checkArg(["--replay", "-r"], params)):
     inFile = sdnpwn.getArg(["--replay", "-r"], params)
     pkt = rdpcap(inFile)
-    for c in range(count):
+    for c in range(int(count)):
       sendp(pkt, iface=iface)
     sdnpwn.message("Replayed  " + inFile + " " + str(count) + " times", sdnpwn.SUCCESS)
