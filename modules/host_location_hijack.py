@@ -59,7 +59,7 @@ def run(params):
   if("--loop" in params):
     loop = True
   if("--delay" in params):
-    loopDelay = params[params.index("--delay")+1]
+    loopDelay = float(params[params.index("--delay")+1])
   
   targets = []
   
