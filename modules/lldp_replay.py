@@ -22,7 +22,7 @@ def signal_handler(signal, frame):
   #Handle Ctrl+C here
   print("")
   sdnpwn.message("Stopping...", sdnpwn.NORMAL)
-  return
+  exit(0)
 
 def info():
   #Description of the what the module is and what it does. This function should return a string.
