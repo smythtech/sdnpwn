@@ -42,9 +42,10 @@ def run(params):
         #confFile = open(appDir + "/sdnpwn_options", 'r+')
         confOut = ""
         for l in confFile.readlines():
-          conf = l.split("=")
-          confVal = input(conf[0] + " [" + conf[1].replace("\n","") + "]: ") or conf[1].replace("\n","")
-          confOut += conf[0] + "=" + confVal + "\n"
+          if len(l) > 0 and l[0] == "$":
+            conf = l.split("=")
+            confVal = input(conf[0] + " [" + conf[1].replace("\n","") + "]: ") or conf[1].replace("\n","")
+            confOut += conf[0] + "=" + confVal + "\n"
         
         confFile.seek(0)
         confFile.write(confOut)
@@ -63,8 +64,9 @@ def run(params):
     config= {}
     with open(buildDir + "/sdnpwn_options", 'r') as confFile:
       for l in confFile.readlines():
-        conf = l.split("=")
-        config[conf[0]] = conf[1].replace("\n","")
+        if len(l) > 0 and l[0] == "$":
+          conf = l.split("=")
+          config[conf[0]] = conf[1].replace("\n","")
       
     sdnpwn.printNormal("Got configuration")
       
