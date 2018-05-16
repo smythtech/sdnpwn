@@ -113,12 +113,12 @@ def run(params):
           #TODO: Remove following items in favour of above
           if("--hello" in params):
             sdnpwn.message("Sending OF Hello to " + str(targetHost), sdnpwn.NORMAL)
-            ofHello = Hello()
+            ofHello = Hello(xid=5)
             sock.send(ofHello.pack())
               
           if("--echo-request" in params):
             sdnpwn.message("Sending OF Echo Request to " + str(targetHost), sdnpwn.NORMAL)
-            echoReq = EchoRequest()
+            echoReq = EchoRequest(xid=5)
             sock.send(echoReq.pack())
               
               
