@@ -87,7 +87,7 @@ def listenerCallback(interface, targetIP, targetMAC, targetPort, sourceIP, sourc
           sdnpwn.message("Port " + targetPort + " closed", sdnpwn.ERROR)
         else:
           sdnpwn.message("Got flags " + flags + " for port " + targetPort, sdnpwn.WARNING)
-      sys.exit(0)
+      return
   return packetHandler
 
 def getFlags(pktFlags):
