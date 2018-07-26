@@ -22,7 +22,7 @@ def signal_handler(signal, frame):
   exit(0)
   
 def info():
-  return "My Description"
+  return "Automatically gets a shell by abusing Floodlight's debug port (6655)"
   
 def usage():
   
