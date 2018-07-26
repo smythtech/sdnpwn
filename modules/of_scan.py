@@ -17,7 +17,7 @@ def signal_handler(signal, frame):
   exit(0)
 
 def info():
-  return "My Description"
+  return "Scan a host for ports running OpenFlow and get a list of supported OpenFlow versions"
   
 def usage():
   sdnpwn.addUsage(["--target", "-t"], "Set target IP or network (192.168.0.0/24)", True)
