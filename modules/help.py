@@ -36,7 +36,7 @@ def run(params):
   
   print("Author: Dylan Smyth")
   print("Site: https://sdnpwn.net")
-  print("Version: 1.0 ")  
+  print("Version: 1.7.0 ")  
   print("")
   
   sdnpwn.message(" What is sdnpwn? ", sdnpwn.SUCCESS)
