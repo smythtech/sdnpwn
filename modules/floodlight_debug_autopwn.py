@@ -22,7 +22,7 @@ def signal_handler(signal, frame):
   exit(0)
   
 def info():
-  return "Automatically gets a shell by abusing Floodlight's debug port (6655)"
+  return "Automatically gets a shell using Floodlight's debug port (6655)"
   
 def usage():
   
@@ -75,8 +75,13 @@ def run(params):
   listening = sdnpwn.getArg(["--listen", "-l"], params)
   noSpawnLocal = sdnpwn.checkArg(["--no-local", "-r"], params)
   
-  listeningIP = listening.split(":")[0]
-  listeningPort = listening.split(":")[1]
+  if(sdnpwn.checkArg(["--listen", "-l"], params)):
+    listeningIP = listening.split(":")[0]
+    listeningPort = listening.split(":")[1]
+  else:
+    sdnpwn.printError("Missing listener options.")
+    print(usage())
+    return    
   
   floodlightDebugPort = 6655
   
