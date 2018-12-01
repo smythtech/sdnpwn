@@ -7,14 +7,15 @@ import sys
 import netifaces
 import errno
 import modules.sdnpwn_common as com
-import imp
+import importlib.machinery
 
 conf.verb = 0
 
 def main():
   if(len(sys.argv) == 1):
     try:
-      mod = imp.load_source("help", "modules/help.py")
+      loader = importlib.machinery.SourceFileLoader("help", "modules/help.py")
+      mod = loader.load_module()
       params = sys.argv.pop(0)
       filter(None, params)
       mod.run(params)
@@ -28,7 +29,8 @@ def main():
     filter(None, params)
     params.pop(0)
     try:
-      mod = imp.load_source(modName, "modules/" + modName + ".py")
+      loader = importlib.machinery.SourceFileLoader(modName, "modules/" + modName + ".py")
+      mod = loader.load_module()
       mod.run(params)
       del sys.modules[modName]
     except IOError as e:
