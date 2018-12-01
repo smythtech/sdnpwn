@@ -11,7 +11,7 @@ def signal_handler(signal, frame):
   #Handle Ctrl+C here
   print("")
   sdnpwn.message("Stopping...", sdnpwn.NORMAL)
-  return
+  exit(0)
 
 def info():
   return "Perform passive information gathering on an OpenFlow connection."
@@ -22,7 +22,7 @@ def usage():
   return sdnpwn.getUsage()
 
 def handlePkt(pkt):
-  if(len(pkt[TCP].payload) > 0):
+  if(TCP in pkt and len(pkt[TCP].payload) > 0):
     try:
       ofHeader = Header()
       ofHeader.unpack(bytes(pkt[TCP].payload)[:8])

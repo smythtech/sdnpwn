@@ -132,11 +132,11 @@ class OpenFlowSwitch():
     
   def addPort(self, port_no=0, hw_addr="", port_name="", port_config=0, port_state=PortState.OFPPS_STP_LISTEN, port_curr=0, port_advertised=0, port_supported=0, port_peer=0):
     if(port_no == 0):
-      port_no = randint(30000,65534)
+      port_no = randint(30000,60000)
     if(hw_addr == ""):
       hw_addr = sdnpwn.generateRandomMacAddress(self.switch_vendor_ouid)
     if(port_name == ""):
-      port_name = "OF Port " + str(randint(1,10000))
+      port_name = "OF Port " + str(port_no)
     
     initQueueID = randint(30000,65534)
                       
@@ -169,16 +169,20 @@ class OpenFlowSwitch():
       return
       
     sdnpwn.message("Socket connected. Sending OF Hello...", sdnpwn.SUCCESS)
-    ofHello = Hello(xid=0)
-    header = Header()
+    ofHello = Hello(xid=5)
+    ofHello.header.xid = 5
     self.comm_sock.send(ofHello.pack()) #Send Hello
+    header = Header()
     replyHeader = self.comm_sock.recv(8)
     
     #Get hello response header & body 
     header.unpack(replyHeader)
     sdnpwn.message("Got " + str(header.message_type), sdnpwn.NORMAL)
-    #sdnpwn.message("Controller base OF version: " + str(header.version), sdnpwn.VERBOSE)
-    replyBody = self.comm_sock.recv(header.length-8) #Get body but ignore
+    sdnpwn.message("Controller base OF version: " + str(header.version), sdnpwn.VERBOSE)
+    try:
+      replyBody = self.comm_sock.recv(header.length-8) #Get body but ignore
+    except:
+      pass
     
     sdnpwn.message("Connected to controller", sdnpwn.SUCCESS)
     
@@ -198,8 +202,9 @@ class OpenFlowSwitch():
           replyBody = self.comm_sock.recv(header.length-8)
           try:
             autohandleOFMessage(self, header, replyBody, self.enable_output)
-          except:
+          except Exception as e:
             sdnpwn.message("Error handling OF message", sdnpwn.WARNING)
+            print(e)
         #except Exception as e:
           #sdnpwn.message("Socket disconnected", sdnpwn.ERROR)
           #print(e)
