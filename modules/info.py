@@ -1,6 +1,6 @@
 
 import modules.sdnpwn_common as com
-import imp
+import importlib.machinery
 
 def info():
   return "Prints module information."
@@ -18,7 +18,8 @@ def run(params):
       for m in params:
         try:
           m = m.replace("-", "_")
-          mod = imp.load_source(m, "modules/" + m + ".py")
+          loader = importlib.machinery.SourceFileLoader(m, "modules/" + m + ".py")
+          mod = loader.load_module()
           com.message("Module Name: " + m, com.NORMAL)
           com.message("Description: " + mod.info(), com.NORMAL)
           com.message("Usage:", com.NORMAL)

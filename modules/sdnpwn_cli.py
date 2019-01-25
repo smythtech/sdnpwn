@@ -1,6 +1,6 @@
 
 import modules.sdnpwn_common as com
-import imp
+import importlib.machinery
 import errno
 import os
 import readline
@@ -37,12 +37,13 @@ def run(params):
       cmd = params[0]
       cmd = cmd.replace("-", "_")
       try:
-        mod = imp.load_source(cmd, "modules/" + cmd + ".py")
+        loader = importlib.machinery.SourceFileLoader(cmd, "modules/" + cmd + ".py")
+        mod = loader.load_module()
         filter(None, params)
         mod.run(params)
         del sys.modules[cmd]
-        imp.reload(signal)
-        imp.reload(com)
+        importlib.reload(signal)
+        importlib.reload(com)
       except InterruptedError as e:
         print("Module interupted.")
       except IOError as e:

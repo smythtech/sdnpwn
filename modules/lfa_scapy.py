@@ -8,7 +8,7 @@ from subprocess import call
 from threading import Thread
 from time import sleep
 import hashlib
-import imp
+import importlib.machinery
 import netifaces
 
 class packetHandler:
@@ -110,7 +110,8 @@ def run(params):
    if("--script" in params):
       externScript = params[params.index("--script")+1]
       try:
-        pipeline = imp.load_source((externScript.split(".py")[0]).split("/")[-1], externScript)
+        loader = importlib.machinery.SourceFileLoader((externScript.split(".py")[0]).split("/")[-1], externScript)
+        pipeline = loader.load_module()
       except:
         sdnpwn.message("Error. Could not load external script " + externScript, sdnpwn.ERROR)
         return 
