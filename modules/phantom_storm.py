@@ -62,7 +62,7 @@ def run(params):
     if("/" in target):
       sdnpwn.message("Building list of target hosts (may take a minute)", sdnpwn.NORMAL)
       targetNetSplit = target.split("/")
-      targetNetHostBits = 32 - targetNetSplit[1]
+      targetNetHostBits = 32 - int(targetNetSplit[1])
       targetNetAddress = targetNetSplit[0]
       noOfNetworkHosts = (2^targetNetHostBits)-2
            
@@ -77,7 +77,7 @@ def run(params):
         except:
           pass
     
-      sdnpwn.message("Found " + len(targets) + " targets in total", sdnpwn.NORMAL)
+      sdnpwn.message("Found " + str(len(targets)) + " targets in total", sdnpwn.NORMAL)
     
     else:
       targets[target] = sdnpwn.getTargetMacAddress(interface, target)
