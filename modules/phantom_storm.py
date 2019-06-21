@@ -82,7 +82,8 @@ def run(params):
     else:
       targets[target] = sdnpwn.getTargetMacAddress(interface, target)
   
-  except:
+  except Exception as e:
+    print(e)
     print(info())
     print(usage())
     return
@@ -94,8 +95,8 @@ def run(params):
   thisHostIP = sdnpwn.getIPAddress(interface)
   thisHostMAC = sdnpwn.getMacAddress(interface)
   
-  #srcPort = random.randint(35000, 60000)
-  #dstPort = random.randint(35000, 60000)
+  srcPort = random.randint(35000, 60000)
+  dstPort = random.randint(35000, 60000)
   
   sdnpwn.message("Starting attack", sdnpwn.NORMAL)
   for t in targets:
