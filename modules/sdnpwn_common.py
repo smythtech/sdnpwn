@@ -109,7 +109,7 @@ def generateRandomMacAddress(ouid=None):
   if(ouid is not None):
     l = 6
     mac = ouid
-    if(mac[len(mac)-1] is not ":"):
+    if(mac[len(mac)-1] != ":"):
       mac+= ":"
   for i in range(0, l):
     if(t == 2):
