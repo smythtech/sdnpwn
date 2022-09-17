@@ -2,14 +2,10 @@
 
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
-from scapy.all import *
 import sys
-import netifaces
 import errno
 import modules.sdnpwn_common as com
 import importlib.machinery
-
-conf.verb = 0
 
 def main():
   if(len(sys.argv) == 1):
