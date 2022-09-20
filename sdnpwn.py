@@ -4,13 +4,14 @@ import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 import sys
 import errno
-import modules.sdnpwn_common as com
+import modules.sdnpwn.sdnpwn_common as com
 import importlib.machinery
+import os
 
 def main():
   if(len(sys.argv) == 1):
     try:
-      loader = importlib.machinery.SourceFileLoader("help", "modules/help.py")
+      loader = importlib.machinery.SourceFileLoader("help", "modules/sdnpwn/help.py")
       mod = loader.load_module()
       params = sys.argv.pop(0)
       filter(None, params)
@@ -25,7 +26,13 @@ def main():
     filter(None, params)
     params.pop(0)
     try:
-      loader = importlib.machinery.SourceFileLoader(modName, "modules/" + modName + ".py")
+      moduleLocation = ""
+      for direc, direcs, filenames in os.walk('modules/'):
+        for filename in filenames:
+          if(filename == (modName + ".py")):
+            moduleLocation = direc + "/" + (modName + ".py")
+            break
+      loader = importlib.machinery.SourceFileLoader(modName, moduleLocation)
       mod = loader.load_module()
       mod.run(params)
       del sys.modules[modName]
