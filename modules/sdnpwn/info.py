@@ -1,6 +1,7 @@
 
 import modules.sdnpwn.sdnpwn_common as com
 import importlib.machinery
+import os
 
 def info():
   return "Prints module information."
@@ -15,12 +16,18 @@ def run(params):
     #try:
       params.pop(0)
       
-      for m in params:
+      for modName in params:
         try:
-          m = m.replace("-", "_")
-          loader = importlib.machinery.SourceFileLoader(m, "modules/" + m + ".py")
+          modName = modName.replace("-", "_")
+          moduleLocation = ""
+          for direc, direcs, filenames in os.walk('modules/'):
+            for filename in filenames:
+              if(filename == (modName + ".py")):
+                moduleLocation = direc + "/" + (modName + ".py")
+                break
+          loader = importlib.machinery.SourceFileLoader(modName, moduleLocation)
           mod = loader.load_module()
-          com.message("Module Name: " + m, com.NORMAL)
+          com.message("Module Name: " + modName, com.NORMAL)
           com.message("Description: " + mod.info(), com.NORMAL)
           com.message("Usage:", com.NORMAL)
           print(mod.usage())
