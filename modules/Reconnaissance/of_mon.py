@@ -17,7 +17,8 @@ def info():
   return "Perform passive information gathering on an OpenFlow connection."
   
 def usage():
-  sdnpwn.addUsage(["-i", "--iface"], "Interface to listen on", True)
+  sdnpwn.addUsage(["-i", "--iface"], "Interface to listen on", False)
+  sdnpwn.addUsage(["-r", "--read"], "PCAP file to read", False)
   
   return sdnpwn.getUsage()
 
@@ -53,6 +54,10 @@ def run(params):
   
   if(sdnpwn.checkArg(["-i", "--iface"], params)):  
     sniff(iface=sdnpwn.getArg(["-i", "--iface"], params), prn=handlePkt)
-  
-  
-  
+  elif(sdnpwn.checkArg(["-r", "--read"], params)):
+    pcap = rdpcap(sdnpwn.getArg(["-r", "--read"], params))
+    for p in pcap:
+      handlePkt(p)
+  else:
+    print(info())
+    print(sdnpwn.getUsage())
