@@ -9,7 +9,7 @@ import importlib.machinery
 import os
 
 def main():
-  if(len(sys.argv) == 1):
+  if((len(sys.argv) == 1) or ("--help" in sys.argv) or ("-h" in sys.argv)):
     try:
       loader = importlib.machinery.SourceFileLoader("help", "modules/sdnpwn/help.py")
       mod = loader.load_module()
@@ -39,12 +39,14 @@ def main():
     except IOError as e:
       if(e == errno.EPERM):
         com.message("Run as root!", com.ERROR)
+      else:
+       com.msg("Error: " + modName + " does not appear to be a valid module", com.ERROR)
     except ImportError as e:
         com.message("Error importing " + modName + " as a module.", com.ERROR)
         print(e)
     #except Exception as e:
       #com.message("Something went wrong!", com.ERROR)
       #print(e)
-      
+
 if __name__=='__main__':
   main()
