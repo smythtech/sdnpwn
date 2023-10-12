@@ -17,6 +17,7 @@ def signal_handler(signal, frame):
   #Handle Ctrl+C here
   print("")
   sdnpwn.message("Stopping...", sdnpwn.NORMAL)
+  exit()
   return
 
 def info():
