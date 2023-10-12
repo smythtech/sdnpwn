@@ -15,6 +15,9 @@ SDNPWN_MODULE_USAGE = []
 # sdnpwn general functions
 def message(msg, col):
   print(col + msg + "\033[0m")
+
+def msg(msg, col):
+  print(col + msg + "\033[0m")
   
 def printNormal(msg):
   message(msg, NORMAL)
