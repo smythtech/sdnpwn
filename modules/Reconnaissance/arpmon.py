@@ -1,7 +1,7 @@
 
 import modules.sdnpwn.sdnpwn_common as sdnpwn
 
-from scapy.all import *
+from scapy.all import sniff, ARP
 import sys
 import subprocess
 import errno
@@ -69,23 +69,26 @@ def info():
 def usage():
   
   sdnpwn.addUsage("-i | --iface", "Interface to use", True)
-  sdnpwn.addUsage("-m | --mode", "Set mode ( watch or map )", True)
+  sdnpwn.addUsage("-m | --mode", "Set mode ( watch or map ). Default: watch", False)
    
   return sdnpwn.getUsage()
 
 def run(params):	
    
-   intf = sdnpwn.getArg(["--iface", "-i"], params)
-   mode = sdnpwn.getArg(["--mode", "-m"], params)
+  intf = sdnpwn.getArg(["--iface", "-i"], params)
+  if(sdnpwn.checkArg(["--mode", "-m"], params)):
+    mode = sdnpwn.getArg(["--mode", "-m"], params)
+  else:
+    mode = "watch"
        
-   if((mode != None) and (intf != None)):
-      pktHandler = packetHandler();
-      pktHandler.mode = mode
-      sdnpwn.message("Starting sniffer on interface " + intf + "\n", sdnpwn.NORMAL);
-      signal.signal(signal.SIGINT, signal_handler)
-      sniff(iface=intf, prn=pktHandler.packetIn)
-   else:
-      print(info())
-      print(usage())
+  if((mode != None) and (intf != None)):
+     pktHandler = packetHandler();
+     pktHandler.mode = mode
+     sdnpwn.message("Starting sniffer on interface " + intf + "\n", sdnpwn.NORMAL);
+     signal.signal(signal.SIGINT, signal_handler)
+     sniff(iface=intf, prn=pktHandler.packetIn)
+  else:
+     print(info())
+     print(usage())
 
 
