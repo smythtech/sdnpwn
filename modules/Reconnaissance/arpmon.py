@@ -37,9 +37,9 @@ class packetHandler:
       if(self.mode == "watch"):
         #print("\n" );
         if(arpType == "who-is"):
-          print("From " + str(srcIp) + "(" + str(srcMac) + ") " + arpType + " to " + dstIp);
+          print(f"From {srcIp} ({srcMac}) {arpType} to {dstIp}");
         elif(arpType == "is-at"):
-          print(str(srcIp) +  " " + arpType + " " + str(srcMac) + " to " + dstIp);
+          print(f"{srcIp} {arpType} {srcMac} to {dstIp}");
 
       elif(self.mode == "map"):
         if(str(dstIp) not in self.hostMacMap):
@@ -56,7 +56,7 @@ def printHostMacMap(hostMacMap):
     subprocess.call("clear")
     print("IP\t\t\t\tMac");
     for h in sorted(hostMacMap):
-      print(h + "\t\t\t" + hostMacMap[h]);
+      print(f"{h}\t\t\t{hostMacMap[h]}");
 
 def signal_handler(signal, frame):
   print("")
@@ -84,7 +84,7 @@ def run(params):
   if((mode != None) and (intf != None)):
      pktHandler = packetHandler();
      pktHandler.mode = mode
-     sdnpwn.message("Starting sniffer on interface " + intf + "\n", sdnpwn.NORMAL);
+     sdnpwn.message(f"Starting sniffer on interface {intf}\n", sdnpwn.NORMAL);
      signal.signal(signal.SIGINT, signal_handler)
      sniff(iface=intf, prn=pktHandler.packetIn)
   else:
