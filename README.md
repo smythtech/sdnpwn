@@ -49,6 +49,24 @@ More information about a certain module can be accessed using the info module:
 
 The above command would retrieve more information about the mods module, such as a description and available options.
 
+# Todo
+Necesary tasks:
+- Check that the set-up script is still suitable. 
+- Test all modules to check for any issues. Verify they function as expected.
+- Fix any bugs that arise based on the above testing.
+- Add consistent signal handling throughout all modules.
+- Add consistent help menu access throughout all modules.
+- Check the OpenFlow library used by of-switch. This needs to be updated or changed.
+- Clean up/optimise code where possible.
+
+Other tasks:
+- Add more OpenFlow versions to the of-switch module. This may require a swap to a different OpenFlow library and possibly a full re-write.
+- Look at creating a p4-switch module that provides similar features to of-switch. 
+- Add more information for fingerprinting controllers. Structure the fingerprinting data in a better way (external file?). 
+- Add up-to-date application templates for the onos-app module.
+- Add modules for vulnerabilities that have been made public in the past few years. 
+- Clean up/optimise code. 
+
 # Further Information
 Check out https://sdnpwn.net for articles and tutorials on using various sdnpwn modules and the attacks they use.
 
