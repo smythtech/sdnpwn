@@ -62,6 +62,7 @@ Necesary tasks:
 Other tasks:
 - Add more OpenFlow versions to the of-switch module. This may require a swap to a different OpenFlow library and possibly a full re-write.
 - Look at creating a p4-switch module that provides similar features to of-switch. 
+- Improve accuracy of the sdn-detect module.
 - Add more information for fingerprinting controllers. Structure the fingerprinting data in a better way (external file?). 
 - Add up-to-date application templates for the onos-app module.
 - Add modules for vulnerabilities that have been made public in the past few years. 
