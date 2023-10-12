@@ -9,7 +9,7 @@ import importlib.machinery
 import os
 
 def main():
-  if((len(sys.argv) == 1) or ("--help" in sys.argv) or ("-h" in sys.argv)):
+  if((len(sys.argv) == 1)):
     try:
       loader = importlib.machinery.SourceFileLoader("help", "modules/sdnpwn/help.py")
       mod = loader.load_module()
@@ -36,6 +36,8 @@ def main():
       mod = loader.load_module()
       mod.run(params)
       del sys.modules[modName]
+    except PermissionError:
+      com.message("Run as root!", com.ERROR)
     except IOError as e:
       if(e == errno.EPERM):
         com.message("Run as root!", com.ERROR)
