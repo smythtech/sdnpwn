@@ -11,6 +11,7 @@ def usage():
   sdnpwn.addUsage("-l", "List all available modules")
   sdnpwn.addUsage("-s", "Search available modules")
   sdnpwn.addUsage("-n", "Create new module from base template")
+  sdnpwn.addUsage("-c", "Module catagory. 'A' = Attack, 'R' = Reconnaissance, 'U' = Utility (i.e. mods -n attack_mod -c A.")
   sdnpwn.addUsage("-t", "Specify template for new module (Optional with -n)")
   sdnpwn.addUsage("-r", "Delete module by name")
   
@@ -19,7 +20,7 @@ def usage():
 def run(params):
   if(len(params) == 1 or "-l" in params):
     printModules(None);
-  
+
   if("-n" in params):
     try:
       templateName = "module_base_template"
@@ -29,26 +30,47 @@ def run(params):
         return
       if("-t" in params):
         templateName = params[params.index("-t")+1]
+      if("-c" in params):
+        cat = params[params.index("-c")+1]
+        catagory = {
+          "A": "Attack",
+          "R": "Reconnaissance",
+          "U": "Utility"
+        }[cat]
+      else:
+        sdnpwn.message("Please provide a catagory for the module (i.e. Attack (A), Reconnaissance (R), Utility (U))", sdnpwn.ERROR)
+        return
 
-      subprocess.call(["cp", "modules/" + templateName.replace("-", "_") + ".py", "modules/" + newModName.replace("-", "_") + ".py"])
+      subprocess.call(["cp", "modules/sdnpwn/" + templateName.replace("-", "_") + ".py", "modules/" + catagory + "/" + newModName.replace("-", "_") + ".py"])
     except:
       sdnpwn.message("Could not create new module", sdnpwn.ERROR)
-      
+
   if("-s" in params):
     try:
       searchString = params[params.index("-s")+1]
       printModules(searchString)
     except:
       sdnpwn.message("Error searching for module", sdnpwn.ERROR)
-  
+
   if("-r" in params):
     try:
       moduleName = params[params.index("-r")+1]
+      if("-c" in params):
+        cat = params[params.index("-c")+1]
+        catagory = {
+          "A": "Attack",
+          "R": "Reconnaissance",
+          "U": "Utility"
+        }[cat]
+      else:
+        sdnpwn.message("Please provide a catagory for the module (i.e. Attack (A), Reconnaissance (R), Utility (U))", sdnpwn.ERROR)
+        return
+
       confirm = input("Are you sure you would like to remove '" + moduleName + "'? [y/n]: ")
       if(confirm == "y"):
-        os.remove("modules/" + moduleName.replace("-", "_") + ".py")
+        os.remove("modules/" + catagory + "/" + moduleName.replace("-", "_") + ".py")
         try:
-          os.remove("modules/" + moduleName.replace("-", "_") + ".pyc")
+          os.remove("modules/" + catagory + "/" + moduleName.replace("-", "_") + ".pyc")
         except:
           pass
         sdnpwn.message("Module '" + moduleName + "' removed.", sdnpwn.WARNING)
@@ -94,5 +116,5 @@ def printModules(searchString):
     modules = getModuleList()
     for m in modules:
       for i in modules[m]:
-        if(searchString in m):
-          sdnpwn.message("" + (m.split(".py")[0]).replace("_", "-"), sdnpwn.NORMAL)
+        if(searchString in i):
+          sdnpwn.message(m + ": " + (i.split(".py")[0]).replace("_", "-"), sdnpwn.NORMAL)
