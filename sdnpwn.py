@@ -2,6 +2,8 @@
 
 import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+from warnings import filterwarnings
+filterwarnings("ignore")
 import sys
 import errno
 import modules.sdnpwn.sdnpwn_common as com
