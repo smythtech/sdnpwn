@@ -14,12 +14,9 @@ From package manager:
 From pip:
    - scapy
    - websocket-client
-From github:
-   - python-openflow-legacy (Older version of Kytos OpenFlow library)
+   - python-openflow
 
 This script will now download the above software using apt-get and pip3. If you're ok with this enter 'y' to continue.
-
-NOTE: sdnpwn works best with Python versions 3.4 and 3.5. Some modules may not function correctly when other Python versions are used.
 
 "
 read -p "Install Required Software? [y/N] " res
@@ -28,17 +25,9 @@ if [ "$res" == "y" ]; then
   sudo apt-get update
   sudo apt-get install python3 python3-pip python3-netifaces python3-scipy git bridge-utils python3-tabulate
   pip install scapy
-  sudo pip install scapy # For whatever reason we need to install this explicitly for root. Must look into this later.
-  #pip3 install python-openflow
+  sudo pip install scapy
   pip install websocket-client
-  
-  mkdir lib
-  cd lib
-  git clone https://github.com/smythtech/python-openflow-legacy
-  cd python-openflow-legacy
-  chmod +x setup.py
-  sudo python3 setup.py install
-  cd ..  
+  pip install python-openflow
 
 echo -e "\n
 
