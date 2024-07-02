@@ -27,9 +27,9 @@ def usage():
   return sdnpwn.getUsage()
 
 def getPorts(port):
+  ports = [6633,6634,6653]
   if(port == None):
     sdnpwn.message("No ports given, using 6633,6634, and 6653.", sdnpwn.NORMAL)
-    ports = [6633,6634,6653]
   elif("," in port):
     ports = port.split(",")
   elif("-" in port):
