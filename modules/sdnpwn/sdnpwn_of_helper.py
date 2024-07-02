@@ -45,7 +45,7 @@ class OpenFlowSwitch():
   forward_packet_out_payload = None
   forward_packet_out_iface = None
   forward_packet_out_port_filter = None
-  
+
   def __init__(self):
     self.switch_config = {}
     self.switch_vendor_id = 0
@@ -55,14 +55,14 @@ class OpenFlowSwitch():
     self.switch_ports = []
     self.switch_stats = {}
     self.switch_flows = {}
-    
+
     self.comm_sock = None
     self.auto_handle_Messages = True
     self.enable_output = False
     self.forward_packet_out_payload = False
     self.forward_packet_out_iface = None
     self.forward_packet_out_port_filter = None
-    
+
     self.__initDefaults__()
 
   def __initDefaults__(self):
@@ -73,19 +73,19 @@ class OpenFlowSwitch():
     self.switch_stats["aggregate"]["packet_count"] = 0
     self.switch_stats["aggregate"]["byte_count"] = 0
     self.switch_stats["aggregate"]["flow_count"] = 0
-    
+
     self.switch_stats["port"] = {}
-    
+
     self.switch_stats["flow"] = {}
-    
+
     self.switch_stats["queue"] = {}
-    
+
   def setVendorID(self, vid):
     self.switch_vendor_id = vid
-    
+
   def setVendorOUID(self, ouid):
     self.switch_vendor_ouid = ouid
-    
+
   def setDescription(self, mfr_desc="", hw_desc="", sw_desc="", serial_num="", dp_desc=""):
     self.switch_desc["switch_mfr_desc"] = mfr_desc
     self.switch_desc["switch_hw_desc"] = hw_desc
@@ -96,7 +96,7 @@ class OpenFlowSwitch():
   def setConfig(self, flags="", miss_send_len=""):
     self.switch_config["flags"] = flags
     self.switch_config["miss_send_len"] = miss_send_len
-  
+
   def setFeatures(self, dpid="", no_of_buffers=1, no_of_tables=1, capabilities=0x00000000, actions=0, ports=[]):
     self.switch_features["dpid"] = dpid
     self.switch_features["no_of_buffers"] = no_of_buffers
@@ -104,7 +104,7 @@ class OpenFlowSwitch():
     self.switch_features["capabilities"] = capabilities
     self.switch_features["actions"] = actions
     self.switch_features["ports"] = ports
-    
+
   def loadConfiguration(self, config):
     self.switch_vendor_id = config["vendor_id"]
     self.switch_desc["switch_mfr_desc"] = config["description"]["manufacturer_description"]
@@ -129,7 +129,7 @@ class OpenFlowSwitch():
 
     self.switch_stats["flow"] = config["stats"]["flow_stats"] 
     #print(self.switch_stats["flow"])
-    
+
   def addPort(self, port_no=0, hw_addr="", port_name="", port_config=0, port_state=PortState.OFPPS_STP_LISTEN, port_curr=0, port_advertised=0, port_supported=0, port_peer=0):
     if(port_no == 0):
       port_no = randint(30000,60000)
@@ -137,9 +137,9 @@ class OpenFlowSwitch():
       hw_addr = sdnpwn.generateRandomMacAddress(self.switch_vendor_ouid)
     if(port_name == ""):
       port_name = "OF Port " + str(port_no)
-    
+
     initQueueID = randint(30000,65534)
-                      
+
     port = PhyPort(port_no=port_no,
                    hw_addr=HWAddress(hw_addr),
                    name=port_name,
@@ -156,9 +156,9 @@ class OpenFlowSwitch():
     self.switch_stats["port"][str(port_no)] = PortStats(port_no=port_no, rx_packets=0, tx_packets=0, rx_bytes=0, tx_bytes=0,
                                                      rx_dropped=0, tx_dropped=0, rx_errors=0, tx_errors=0, rx_frame_err=0, 
                                                      rx_over_err=0, rx_crc_err=0, collisions=0)
-    
+
     self.switch_stats["queue"][str(port_no) + ":" + str(initQueueID)] = QueueStats(port_no=port_no, queue_id=initQueueID, tx_bytes=0, tx_packets=0, tx_errors=0)
-    
+
   def connect(self, controllerIP, port):
     try:
       self.comm_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -167,14 +167,14 @@ class OpenFlowSwitch():
       sdnpwn.message("Problem connecting to " + controllerIP + ":" + str(port), sdnpwn.ERROR)
       print
       return
-      
+
     sdnpwn.message("Socket connected. Sending OF Hello...", sdnpwn.SUCCESS)
     ofHello = Hello(xid=5)
     ofHello.header.xid = 5
     self.comm_sock.send(ofHello.pack()) #Send Hello
     header = Header()
     replyHeader = self.comm_sock.recv(8)
-    
+
     #Get hello response header & body 
     header.unpack(replyHeader)
     sdnpwn.message("Got " + str(header.message_type), sdnpwn.NORMAL)
@@ -183,9 +183,9 @@ class OpenFlowSwitch():
       replyBody = self.comm_sock.recv(header.length-8) #Get body but ignore
     except:
       pass
-    
+
     sdnpwn.message("Connected to controller", sdnpwn.SUCCESS)
-    
+
     if(self.auto_handle_Messages == True):
       run = True
       sdnpwn.message("Handling OpenFlow messages automatically", sdnpwn.NORMAL)
@@ -213,7 +213,7 @@ class OpenFlowSwitch():
     else:
       return True
 
-class Flow(GenericMessage):
+class v10Flow():
   match = None
   cookie = None
   command = None
@@ -224,17 +224,17 @@ class Flow(GenericMessage):
   out_port = None
   flags = None
   actions = None
-  
+
   length = None
   duration_sec = None
   duration_nsec = None
   packet_count = None
   byte_count = None
-  
+
   table_id = None
-  
-  
-  
+
+
+
   def __init__(self, match=None, cookie=0,
                  idle_timeout=0, hard_timeout=0, priority=0,
                  buffer_id=0, out_port=Port.OFPP_NONE,
@@ -249,23 +249,23 @@ class Flow(GenericMessage):
     self.out_port = out_port
     self.flags = flags
     self.actions = [] if actions is None else actions
-    
+
     self.length = 0
     self.duration_sec = 0
     self.duration_nsec = 0
     self.packet_count = 0
     self.byte_count = 0
-    
+
     self.table_id = 1
-    
+
   def getFlowStats(self):
     stats = FlowStats(self.length, self.table_id, self.match,
                       self.duration_sec, self.duration_nsec, self.priority,
                       self.idle_timeout, self.hard_timeout, self.cookie,
                       self.packet_count, self.byte_count, self.actions)
-    
+
     return stats
-  
+
   def toString(self):
     return ("cookie: " + (str(self.cookie) if self.cookie != 0 else "*") + ", "
             "idle_timeout: " + str(self.idle_timeout) + ", "
@@ -277,7 +277,7 @@ class Flow(GenericMessage):
             "actions: " + self.actionsToString(self.actions) + ", "
             "match: " + self.matchToString(self.match) + ""
            )
-  
+
   def actionsToString(self, actions):
     actionHeaders = ""
     if(isinstance(actions, list)):
@@ -285,9 +285,9 @@ class Flow(GenericMessage):
         actionHeaders += (self.getActionHeaderDetails(a))(a)  + ","
     else:
       actionHeaders += (self.getActionHeaderDetails(actions))(actions)
-      
+
     return "[" + actionHeaders[:-1] + "]"
-  
+
   def getActionHeaderDetails(self, action):
     return {
              ActionType.OFPAT_OUTPUT: (lambda action: ("[OFPAT_OUTPUT: Port " + str(action.port) + "]")),
@@ -303,9 +303,9 @@ class Flow(GenericMessage):
              ActionType.OFPAT_SET_TP_DST: (lambda action: ("[OFPAT_SET_TP_DST: Layer 4 Port " + str(action.tp_port) + "]")),
              ActionType.OFPAT_ENQUEUE: (lambda action: ("[OFPAT_ENQUEUE: Port " + str(action.port) + ", Queue ID " + str(action.queue_id) + "]")),
              ActionType.OFPAT_VENDOR: (lambda action: ("[OFPAT_VENDOR: Vendor action " + str(action.vendor) + "]")),
-             
+
            }[int(str(action.action_type))]
-    
+
   def matchToString(self, match):
     return ("[ " +
            "in_port: " + (str(match.in_port) if match.in_port != 0 else "*") + ", " +
@@ -339,12 +339,12 @@ def getResponse(sock):
     if(verbose == True):
       print("Error: " + str(e))
     return None
-  
+
 def autohandleOFMessage(device, header, body, verbose=False):
-  
+
   if(header.message_type == None):
     device.comm_sock.close()
-    
+
   action = {
             0: handleHello,
             1: handleError,
@@ -368,16 +368,16 @@ def autohandleOFMessage(device, header, body, verbose=False):
             19: handleBarrierResponse,
             20: handleQueueConfigRequest,
             21: handleQueueConfigResponse
-    
+
            }[(header.message_type & 0xFF)]
-  
+
   if(callable(action)):
     action(device, header, body, verbose)
-    
+
 def handleHello(device, header, body, verbose):
   if(verbose):
     print("Got Hello")
-  
+
 def handleError(device, header, body, verbose):
   if(verbose):
     print("Got Error")
@@ -385,16 +385,16 @@ def handleError(device, header, body, verbose):
 def handleEchoRequest(device, header, body, verbose):
   if(verbose):
     print("Got EchoReq")
-    
+
   ofEchoReply = EchoReply(xid=header.xid)
   device.comm_sock.send(ofEchoReply.pack())
   if(verbose):
     print("Sent EchoRes")
-    
+
 def handleEchoResponse(device, header, body, verbose):
   if(verbose):
     print("Got EchoRes")
-    
+
 def handleVendorMessage(device, header, body, verbose):
   if(verbose):
     print("Got Vendor Message")
@@ -406,7 +406,7 @@ def handleVendorMessage(device, header, body, verbose):
   device.comm_sock.send(vendorBytes)
   if(verbose):
     print("Sent Vendor Message")
-    
+
 def handleFeatureRequest(device, header, body, verbose):
   if(verbose):
     print("Got FeatureReq")
@@ -414,11 +414,11 @@ def handleFeatureRequest(device, header, body, verbose):
   device.comm_sock.send(ofFeaturesReply.pack())
   if(verbose):
     print("Sent FeatureRes")
-    
+
 def handleFeatureResponse(device, header, body, verbose):
   if(verbose):
     print("Got FeatureRes")
-    
+
 def handleConfigRequest(device, header, body, verbose):
   if(verbose):
     print("Got ConfigReq")
@@ -427,38 +427,38 @@ def handleConfigRequest(device, header, body, verbose):
   device.comm_sock.send(ofConfigRes.pack())
   if(verbose):
     print("Sent ConfigRes")
-    
+
 def handleConfigResponse(device, header, body, verbose):
   if(verbose):
     print("Got ConfigRes")
-    
+
 def handleSetConfig(device, header, body, verbose):
   if(verbose):
     print("Got SetConfig")
   device.setConfig(flags=bytearray(body)[0:2], miss_send_len=bytearray(body)[2:4])
-  
+
 def handlePacketIn(device, header, body, verbose):
   if(verbose):
     print("Got PacketIn")
-    
+
 def handleFlowRemoved(device, header, body, verbose):
   if(verbose):
     print("Got FlowRemoved")
-    
+
 def handlePortStatus(device, header, body, verbose):
   if(verbose):
     print("Got PortStatus")
-    
+
 def handlePacketOut(device, header, body, verbose):
   if(verbose):
     print("Got PacketOut")
   packetOut = PacketOut()
   packetOut.unpack(body)
-  tempFlow = Flow()
+  tempFlow = v10Flow()
   try:
     pkt = Ether(packetOut.data.pack())
     if(verbose):
-      print(Flow.actionsToString(actions))
+      print(v10Flow.actionsToString(actions))
       pkt.show()
     if(device.forward_packet_out_payload == True):
       if(device.forward_packet_out_port_filter is not None):
@@ -466,22 +466,22 @@ def handlePacketOut(device, header, body, verbose):
           sendp(pkt, iface=device.forward_packet_out_iface)
       else:
         sendp(pkt, iface=device.forward_packet_out_iface)
-      
+
   except Exception as e:
     sdnpwn.message("Got error handling packet out.", sdnpwn.WARNING)
     sdnpwn.message(str(e), sdnpwn.VERBOSE)
-  
+
 def handleFlowMod(device, header, body, verbose):
   if(verbose):
     print("Got FlowMod")
   flowMod = FlowMod()
   flowMod.unpack(body)
-  flow = Flow(match=flowMod.match, cookie=flowMod.cookie, 
+  flow = v10Flow(match=flowMod.match, cookie=flowMod.cookie, 
                 idle_timeout=flowMod.idle_timeout, hard_timeout=flowMod.hard_timeout, 
                 priority=flowMod.priority, buffer_id=flowMod.buffer_id, out_port=flowMod.out_port,
                 flags=flowMod.flags, actions=flowMod.actions
                )
-   
+
   if(flowMod.command == FlowModCommand.OFPFC_ADD):
     sdnpwn.message("Adding New Flow ", sdnpwn.NORMAL)
     device.switch_flows[str(flow.cookie)] = flow
@@ -504,11 +504,11 @@ def handleFlowMod(device, header, body, verbose):
     else:
       del device.switch_flows[str(flow.cookie)]
   print(flow.toString())
-  
+
 def handlePortMod(device, header, body, verbose):
   if(verbose):
     print("Got PortMod")
-    
+
 def handleStatsRequest(device, header, body, verbose):
   if(verbose):
     print("Got StatsReq")
@@ -526,43 +526,42 @@ def handleStatsRequest(device, header, body, verbose):
     statsReplyBody = descReply.pack()
     ofStatsReply = StatsReply(xid=header.xid, body_type=ofStatsReq.body_type, flags=UBInt16(0x00000000), body=statsReplyBody)
     device.comm_sock.send(ofStatsReply.pack())
-      
+
   elif(ofStatsReq.body_type == 1): #Flow flag
     if(verbose):
       print("Got flow stats req")
     #There may be an issue with the library here. Getting "Pack error: UBInt16 could not pack NoneType = None.". Must investigate further
     #ofFlowStatsReq = FlowStatsRequest()
     #ofFlowStatsReq.unpack(body)
-     
+
     #for f in device.switch_flows:
-      #flowStats = FlowStats(length=device.switch_flows[f].length, 
-                            #table_id=device.switch_flows[f].table_id, 
+      #flowStats = FlowStats(length=device.switch_flows[f].length,
+                            #table_id=device.switch_flows[f].table_id,
                             #match=ofFlowStatsReq.match,
-                            #duration_sec=device.switch_stats["flow"]["duration_sec"], 
-                            #duration_nsec=device.switch_stats["flow"]["duration_nsec"], 
+                            #duration_sec=device.switch_stats["flow"]["duration_sec"],
+                            #duration_nsec=device.switch_stats["flow"]["duration_nsec"],
                             #priority=device.switch_flows[f].priority,
-                            #idle_timeout=device.switch_flows[f].idle_timeout, 
-                            #hard_timeout=device.switch_flows[f].hard_timeout, 
+                            #idle_timeout=device.switch_flows[f].idle_timeout,
+                            #hard_timeout=device.switch_flows[f].hard_timeout,
                             #cookie=device.switch_flows[f].cookie,
-                            #packet_count=device.switch_stats["flow"]["packet_count"], 
-                            #byte_count=device.switch_stats["flow"]["byte_count"], 
+                            #packet_count=device.switch_stats["flow"]["packet_count"],
+                            #byte_count=device.switch_stats["flow"]["byte_count"],
                             #actions=device.switch_flows[f].actions
                             #)
       #statsReplyBody = flowStats.pack()
       #ofStatsReply = StatsReply(xid=header.xid, body_type=ofStatsReq.body_type, flags=UBInt16(0x00000000), body=statsReplyBody)
-      #device.comm_sock.send(ofStatsReply.pack())  
-      
-      
+      #device.comm_sock.send(ofStatsReply.pack())
+
   elif(ofStatsReq.body_type == 2): #Aggregate flag
     aggReply = AggregateStatsReply(packet_count=device.switch_stats["aggregate"]["packet_count"], byte_count=device.switch_stats["aggregate"]["byte_count"], flow_count=device.switch_stats["aggregate"]["flow_count"])
     statsReplyBody = aggReply.pack()
     ofStatsReply = StatsReply(xid=header.xid, body_type=ofStatsReq.body_type, flags=UBInt16(0x00000000), body=statsReplyBody)
     device.comm_sock.send(ofStatsReply.pack())
-      
+
   elif(ofStatsReq.body_type == 3): #Table flag
     if(verbose):
       print("Got table")
-      
+
   elif(ofStatsReq.body_type == 4): #Port flag
     if(verbose):
       print("Got port")
@@ -582,7 +581,7 @@ def handleStatsRequest(device, header, body, verbose):
       statsReplyBody = portStats.pack()
       ofStatsReply = StatsReply(xid=header.xid, body_type=ofStatsReq.body_type, flags=UBInt16(0x00000000), body=statsReplyBody)
       device.comm_sock.send(ofStatsReply.pack())
-   
+
   elif(ofStatsReq.body_type == 5): #Queue flag
     if(verbose):
       print("Got Queue")
@@ -604,14 +603,14 @@ def handleStatsRequest(device, header, body, verbose):
       statsReplyBody = queueStats.pack()
       ofStatsReply = StatsReply(xid=header.xid, body_type=ofStatsReq.body_type, flags=UBInt16(0x00000000), body=statsReplyBody)
       device.comm_sock.send(ofStatsReply.pack())
-      
+
   if(verbose):
     print("Sent StatsRes")
-  
+
 def handleStatsResponse(device, header, body, verbose):
   if(verbose):
     print("Got StatsRes")
-  
+
 def handleBarrierRequest(device, header, body, verbose):
   if(verbose):
     print("Got BarrierReq")
@@ -619,19 +618,19 @@ def handleBarrierRequest(device, header, body, verbose):
   device.comm_sock.send(ofBarrierReply.pack())
   if(verbose):
     print("Sent BarrierRes")
-  
+
 def handleBarrierResponse(device, header, body, verbose):
   if(verbose):
     print("Got BarrierRes")
-  
+
 def handleQueueConfigRequest(device, header, body, verbose):
   if(verbose):
     print("Got QueueGetConfigReq")
-  
+
 def handleQueueConfigResponse(device, header, body, verbose):
   if(verbose):
       print("Got QueueGetConfigRes")
-      
+
 #
 #
 # Sending OF messages
@@ -654,7 +653,7 @@ def sendFeatureResponse(sock):
   pass
 
 
-  
+
 
 def paddedMessage(message, size):
   padded = b''
@@ -663,14 +662,14 @@ def paddedMessage(message, size):
   for i in range(0, paddingNeeded):
     padded += b'\x00'
   return padded
-  
+
 def printFeatureReplyDetails(ofFeatureReply):
   sdnpwn.message("Device Datapath ID: " + str(ofFeatureReply.datapath_id), sdnpwn.NORMAL)
   sdnpwn.message("Number of Buffers: " + str(ofFeatureReply.n_buffers), sdnpwn.NORMAL)
   sdnpwn.message("Number of Tables: " + str(ofFeatureReply.n_tables), sdnpwn.NORMAL)
-  sdnpwn.message("Capabilities: " + bin(int(str(ofFeatureReply.capabilities))), sdnpwn.NORMAL) 
-  sdnpwn.message("Actions: " + bin(int(str(ofFeatureReply.actions))), sdnpwn.NORMAL) 
-  sdnpwn.message("Ports: ", sdnpwn.NORMAL)   
+  sdnpwn.message("Capabilities: " + bin(int(str(ofFeatureReply.capabilities))), sdnpwn.NORMAL)
+  sdnpwn.message("Actions: " + bin(int(str(ofFeatureReply.actions))), sdnpwn.NORMAL)
+  sdnpwn.message("Ports: ", sdnpwn.NORMAL)
   for p in ofFeatureReply.ports:
     print("\tNumber: " + str(p.port_no))
     print("\tHardware Address: " + str(p.hw_addr))

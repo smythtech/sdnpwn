@@ -88,7 +88,7 @@ def getModuleFileList():
 
 def getModuleList():
   ignoreFileList = ["__init__", "template", ".pyc", "sdnpwn"]
-  ignoreDirList = ["", "__pycache__"] # Empty dir name omits contents of modules directory
+  ignoreDirList = ["", "__pycache__", "ofv10", "ofv13"] # Empty dir name omits contents of modules directory
   modules = {}
   for direc, direcs, filenames in os.walk('modules/'):
     dir = direc.split("/")[-1]
