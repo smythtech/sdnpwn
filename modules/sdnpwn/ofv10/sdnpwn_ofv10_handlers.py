@@ -173,7 +173,6 @@ class OFv10MessageHandler():
     try:
       pkt = Ether(packetOut.data.pack())
       if(verbose):
-        print(Flow.actionsToString(actions))
         pkt.show()
       if(device.forward_packet_out_payload == True):
         if(device.forward_packet_out_port_filter is not None):
