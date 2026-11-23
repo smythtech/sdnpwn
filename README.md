@@ -1,4 +1,7 @@
 [![Mentioned in Awesome SDN Security](https://awesome.re/mentioned-badge.svg)](https://github.com/lopezalvar/awesome-sdn-security)
+
+## Please note: No further updates or maintenance is planned for this tool.
+
 # What is sdnpwn? 
 sdnpwn is a toolkit and framework for testing the security of Software-Defined Networks (SDNs). 
 
