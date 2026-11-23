@@ -66,8 +66,5 @@ Other tasks:
 - Add modules for vulnerabilities that have been made public in the past few years. 
 - Clean up/optimise code. 
 
-# Further Information
-Check out https://sdnpwn.net for articles and tutorials on using various sdnpwn modules and the attacks they use.
-
 # Disclaimer
 This tool comes without warranty. The developers of this tool decline all responsability for malicious or illegal use, and impact caused by malicious or illegal use. 
