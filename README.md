@@ -1,6 +1,6 @@
 [![Mentioned in Awesome SDN Security](https://awesome.re/mentioned-badge.svg)](https://github.com/lopezalvar/awesome-sdn-security)
 # What is sdnpwn? 
-sdnpwn is a toolkit and framework for testing the security of Software-Defined Networks (SDNs). For more information check out this article: https://sdnpwn.net/2017/08/22/what-is-sdnpwn/
+sdnpwn is a toolkit and framework for testing the security of Software-Defined Networks (SDNs). 
 
 # Installation
 
@@ -24,8 +24,6 @@ sudo ./setup.sh
 ```
 
 # Usage
-
-Cheatsheet: https://sdnpwn.net/tools/sdnpwn/
 
 Functionality in sdnpwn is divided into different modules. Each attack or attack type is available from a certain module.
   
