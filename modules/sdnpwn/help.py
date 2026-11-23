@@ -36,7 +36,6 @@ def run(params):
   
   print("Author: Dylan Smyth")
   print("Site: https://smythtech.net")
-  print("Site: https://sdnpwn.net")
   print("Version: 1.8.0 ")  
   print("")
   
@@ -73,9 +72,6 @@ Modules can be removed with the following command:
 ./sdnpwn.py mods -r <module name>''')
   print("")
   
-  sdnpwn.message("Further Information", sdnpwn.SUCCESS)
-  print("Check out https://sdnpwn.net for articles and tutorials on using various sdnpwn modules and the attacks they use.")
-  print("")
     
   
 
